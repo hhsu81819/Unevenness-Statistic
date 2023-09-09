@@ -1,3 +1,4 @@
+# Spatail lag matrix of X by the k nearest neighbors' elements
 def spa_lag(X, k):
     tree = cKDTree(X)
     spatial_lag = []
@@ -13,6 +14,7 @@ def spa_lag(X, k):
     spatial_lag = np.array(spatial_lag)
     return spatial_lag
 
+# Spatail Gini coefficient for pts with its weight matrix 
 
 def sgini(pts, w):
     w=w/np.nansum(w)
@@ -27,6 +29,8 @@ def sgini(pts, w):
     area = trapz(cumx[x_clipped <= 1], x_clipped[x_clipped <= 1])   
     GS=(0.5-area)*2    
     return GS
+
+# Spatail-lag Gini coefficient for pts with its weight matrix and spatial lag la
 
 def sgini_la(pts, la, w):
     w=w/np.nansum(w)

@@ -1,0 +1,49 @@
+def spa_lag(X, k):
+    tree = cKDTree(X)
+    spatial_lag = []
+
+    for point in X:
+        # Query the k nearest neighbors' indices
+        _, indices = tree.query(point, k=k+1)  # +1 to exclude the point itself
+
+        # Calculate the spatial lag by averaging the values of the k nearest neighbors
+        spatial_lag_value = np.mean(X[indices[1:], :], axis=0)  # Exclude the first index which is the point itself
+        spatial_lag.append(spatial_lag_value)
+
+    spatial_lag = np.array(spatial_lag)
+    return spatial_lag
+
+
+def sgini(pts, w):
+    w=w/np.nansum(w)
+    sorted_indices = np.argsort(pts.flatten())
+    sorted_x = pts.flatten()[sorted_indices]
+    sorted_w = w.flatten()[sorted_indices]
+    # Force float dtype to avoid overflows
+    cumw = np.cumsum(sorted_w)-sorted_w/2
+    cumx = np.cumsum(sorted_x)
+    cumx=cumx/cumx[-1]
+    x_clipped = np.clip(cumw/cumw[-1], 0, 1)
+    area = trapz(cumx[x_clipped <= 1], x_clipped[x_clipped <= 1])   
+    GS=(0.5-area)*2    
+    return GS
+
+def sgini_la(pts, la, w):
+    w=w/np.nansum(w)
+
+    sorted_indicesr = np.argsort(la.flatten())
+
+    sorted_indices = np.argsort(pts.flatten())
+    sorted_x = pts.flatten()[sorted_indicesr]
+    sorted_w = w.flatten()[sorted_indices]
+    # Force float dtype to avoid overflows
+    cumw = np.cumsum(sorted_w)-sorted_w/2
+    cumx = np.cumsum(sorted_x)
+    cumx=cumx/cumx[-1]
+    x_clipped = np.clip(cumw/cumw[-1], 0, 1)
+    area = trapz(cumx[x_clipped <= 1], x_clipped[x_clipped <= 1]) 
+    GS=(0.5-area)*2
+    return GS
+
+
+
